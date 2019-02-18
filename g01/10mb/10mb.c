@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <fcntl.h>
+#include <string.h>
 
 /*
  * writes 'a's to a file
@@ -25,14 +26,34 @@ int writeTrash (int fd, size_t size, size_t chunck){
     return 0;
 }
 
-void _usage (char **argv) {
-    printf ("Usage : %s <chunck size> <output filename>\n", argv[0]);
+void _usage (char *proc) {
+    printf ("Usage : %s <chunck size> <output filename>\n", proc);
+}
+
+int _getChunck (char *s) {
+    int temp = atoi(s);
+    if (temp == 0 && !(s[0] == '0' && !s[1]))
+        temp = -1;
+    return temp;
 }
 
 int main (int argc, char **argv){
-    int fd = open ("10mb.dat", O_CREAT | O_WRONLY, 0666);
-    writeTrash (fd, 1024 * 1024 * 10, 0);
+    int chunck;
+    if (argc < 3){
+        _usage(argv[0]);
+        return 1;
+    }
+    else if ((chunck = _getChunck(argv[1])) < 0)
+        return 2;
+
+    int fd = open (argv[2], O_CREAT | O_WRONLY, 0666);
+    if (fd < 0){
+        puts ("An error occured while opening the file.");
+        return 3;
+    }
+    writeTrash (fd, 1024 * 1024 * 10, chunck);
     close (fd);
+
 	return 0;
 }
 
