@@ -28,17 +28,26 @@ int end_reached_buffer (Buffer_t *buffer){
     return buffer->cursor >= buffer->cur_buf_size;
 }
 
-ssize_t readln_buffer (Buffer_t *buffer, void *buf, size_t nbyte){
-    ssize_t i = 0;
-    size_t max_i = nbyte - 1;
-    while (i < max_i){
-        if (end_reached_buffer (buffer))
-            if (refill_buffer (buffer) <= 0)
+ssize_t readln_buffer (Buffer_t *buf_t, void *buf, size_t nbyte){
+    size_t i = 0;
+    size_t last_i = 0;
+    size_t ini_cursor = buf_t->cursor;
+    nbyte--;            /* save space for NUL */
+    while (i < nbyte){
+        if (end_reached_buffer (buf_t)){
+            memcpy ((char*)buf+last_i, buf_t->buf + ini_cursor, i - last_i);
+            last_i = i;
+            if (refill_buffer (buf_t) <= 0)
                 break;
-        ((char*)buf)[i] = buffer->buf[buffer->cursor++];
-        if (((char*)buf)[i++] == '\n')
+            ini_cursor = 0;
+        }
+        i++;
+        if (buf_t->buf[buf_t->cursor++] == '\n'){
             break;
+        }
     }
+//    printf ("%d %d %d\n", i, last_i, buf_t->cursor);
+    memcpy ((char*)buf+last_i, buf_t->buf + ini_cursor, i - last_i);
     ((char*)buf)[i] = 0;
     return i;
 }
