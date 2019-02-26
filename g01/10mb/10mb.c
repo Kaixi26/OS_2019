@@ -46,7 +46,7 @@ int main (int argc, char **argv){
     else if ((chunck = _getChunck(argv[1])) < 0)
         return 2;
 
-    int fd = open (argv[2], O_CREAT | O_WRONLY, 0666);
+    int fd = open (argv[2], O_CREAT | O_TRUNC | O_WRONLY, 0666);
     if (fd < 0){
         puts ("An error occured while opening the file.");
         return 3;

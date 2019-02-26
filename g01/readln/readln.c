@@ -17,5 +17,5 @@ ssize_t readln (int fd, void *buf, size_t nbyte) {
     cbuf[i] = 0;
     lseek (fd, (i - rd) + foundnl, SEEK_CUR);
 
-    return i;
+    return (foundnl == 1 ? i : -i);
 }
