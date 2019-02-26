@@ -5,7 +5,7 @@
 #include <stdlib.h>
 
 #define MAT_DIM 1024 * 25
-#define THREADS 100
+#define FORKS 3
 
 long getDiffMilis (struct timespec tpi, struct timespec tpf){
     long secs  = (tpf.tv_sec - tpi.tv_sec)*1000;
@@ -42,15 +42,15 @@ int main (){
     puts ("FILLING MATRIX.");
     mfill (mat);
     printf ("%ld MiB FILLED.\n", (MAT_DIM * MAT_DIM * sizeof(int)) / (1024 * 1024));
-    int workload = (int)(((float)MAT_DIM)/((float)THREADS));
+    int workload = (int)(((float)MAT_DIM)/((float)FORKS));
     int is_child;
     int i;
-    puts ("CREATING THREADS.");
+    puts ("FORKING PROGRAM.");
     struct timespec tpi;
     struct timespec tpf;
     clock_gettime(CLOCK_REALTIME, &tpi); 
 
-    for (i = 0; i < THREADS; i++){
+    for (i = 0; i < FORKS; i++){
         is_child = !fork ();
         if (is_child){
             int li = i * workload;
@@ -63,7 +63,7 @@ int main (){
     int status;
     int r = 0;
     pid_t p;
-    puts ("WAITING FOR THREADS.");
+    puts ("WAITING FOR FORKS.");
     do {
         p = wait (&status);
         r = r || WEXITSTATUS(status);
