@@ -31,12 +31,12 @@ char **partition (char *command){
     return tmp;
 }
 
-int system (const char *command){
+int mysystem (const char *command){
     pid_t childpid;
     char *tmp = strdup (command);
     if (!(childpid = fork())){
         char **part = partition (tmp);
-        execv (part[0], &(part[1]));
+        execv (part[0], part);
         _exit (1);
     }
     pid_t stat;
@@ -44,10 +44,3 @@ int system (const char *command){
     if (tmp) free (tmp);
     return 0;
 }
-
-
-int main (int argc, char **argv){
-    system ("/bin/ls -l -a");
-	return 0;
-}
-

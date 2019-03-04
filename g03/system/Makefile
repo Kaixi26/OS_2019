@@ -1,7 +1,7 @@
 CC=gcc
 FLAGS=-Wall
-MAIN=system.c
-SOURCE=
+MAIN=main.c
+SOURCE=system.c
 
 compile :
 	$(CC) $(FLAGS) -o system $(MAIN) $(SOURCE)
