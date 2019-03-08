@@ -4,7 +4,8 @@
 #include <time.h>
 #include <stdlib.h>
 
-#define MAT_DIM 1024 * 25
+#define MAT_COLS    1024 * 20
+#define MAT_LIN     1024 * 20
 #define FORKS 3
 
 long getDiffMilis (struct timespec tpi, struct timespec tpf){
@@ -14,7 +15,7 @@ long getDiffMilis (struct timespec tpi, struct timespec tpf){
 }
 int mtest (int **mat, int li, int lf, int targ){
     for (; li < lf; li++)
-        for (int j = 0; j < MAT_DIM; j++)
+        for (int j = 0; j < MAT_COLS; j++)
             if (mat[li][j] == targ)
                 return 1;
     return 0;
@@ -22,16 +23,16 @@ int mtest (int **mat, int li, int lf, int targ){
 
 void mfill (int **mat){
     srand(time(NULL));
-    for (int i=0; i<MAT_DIM; i++)
-        for (int j=0; j<MAT_DIM; j++){
-            mat[i][j] = rand ();
+    for (int i=0; i<MAT_LIN; i++)
+        for (int j=0; j<MAT_COLS; j++){
+            mat[i][j] = 1; //rand ();
         }
 }
 
 int **minit () {
-    int **mat = calloc (MAT_DIM, sizeof(int*));
-    for (int i=0; i<MAT_DIM; i++)
-        mat[i] = calloc (MAT_DIM, sizeof(int));
+    int **mat = calloc (MAT_LIN, sizeof(int*));
+    for (int i=0; i<MAT_LIN; i++)
+        mat[i] = calloc (MAT_COLS, sizeof(int));
     return mat;
 }
 
@@ -41,8 +42,8 @@ int main (){
     int **mat = minit();
     puts ("FILLING MATRIX.");
     mfill (mat);
-    printf ("%ld MiB FILLED.\n", (MAT_DIM * MAT_DIM * sizeof(int)) / (1024 * 1024));
-    int workload = (int)(((float)MAT_DIM)/((float)FORKS));
+    printf ("%ld MiB FILLED.\n", (MAT_COLS * MAT_LIN * sizeof(int)) / (1024 * 1024));
+    int workload = (int)(((float)MAT_LIN)/((float)FORKS));
     int is_child;
     int i;
     puts ("FORKING PROGRAM.");
